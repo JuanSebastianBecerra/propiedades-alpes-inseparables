@@ -5,7 +5,7 @@ from src.propiedadesalpes.modulos.propiedades.dominio.fabricas import _FabricaTr
 class TransaccionQueryBaseHandler(QueryHandler):
     def __init__(self):
         self._fabrica_repositorio: FabricaRepositorio = FabricaRepositorio()
-        self.fabrica_transacciones: _FabricaTransaccion = _FabricaTransaccion()
+        self._fabrica_transacciones: _FabricaTransaccion = _FabricaTransaccion()
 
     @property
     def fabrica_repositorio(self):
@@ -13,4 +13,4 @@ class TransaccionQueryBaseHandler(QueryHandler):
     
     @property
     def fabrica_transacciones(self):
-        return self.fabrica_transacciones    
+        return self._fabrica_transacciones    

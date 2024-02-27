@@ -11,7 +11,7 @@ class QueryResultado:
 
 class QueryHandler(ABC):
     @abstractmethod
-    def handler(self, query: Query) -> QueryResultado:
+    def handle(self, query: Query) -> QueryResultado:
         raise NotImplementedError()
     
 @singledispatch
