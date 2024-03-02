@@ -7,4 +7,3 @@ import uuid
 @dataclass
 class TransaccionCreada(EventoDominio):
     id_propiedad: str = None
-    fecha_creacion: datetime = None

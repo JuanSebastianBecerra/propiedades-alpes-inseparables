@@ -64,18 +64,20 @@ class Despachador:
 
     def publicar_evento(self, evento, topico):
         # TODO Debe existir un forma de crear el Payload en Avro con base al tipo del evento
+        print("publique el evento")
+        print(evento)
         payload = EventoTransaccionCreadaPayload(
-            id_propiedad=str(evento.id_reserva),
-            fecha_creacion=int(unix_time_millis(evento.fecha_creacion))
+            id_propiedad=str(evento.id_propiedad),
         )
         evento_integracion = EventoTransaccionCreada(data=payload)
         self._publicar_mensaje(evento_integracion, topico, AvroSchema(EventoTransaccionCreada))
 
     def publicar_comando(self, comando, topico):
+        print("publique el comando")
+        print(comando)
         # TODO Debe existir un forma de crear el Payload en Avro con base al tipo del comando
         payload = ComandoCrearTransaccionPayload(
-            id_propiedad=str(comando.id_reserva),
-            fecha_creacion=int(unix_time_millis(comando.fecha_creacion))
+            id_propiedad=str(comando.id_propiedad)
             # agregar itinerarios
         )
         comando_integracion = ComandoCrearTransaccion(data=payload)

@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 from enum import Enum
 
-from src.propiedadesalpes.seedwork.dominio.entidades import AgregacionRaiz
+from src.mercadoalpes.seedwork.dominio.entidades import AgregacionRaiz
 from pydispatch import dispatcher
 
 import pickle

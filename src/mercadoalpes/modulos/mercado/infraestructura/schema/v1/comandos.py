@@ -4,7 +4,6 @@ from src.mercadoalpes.seedwork.infraestructura.schema.v1.comandos import (Comand
 
 class ComandoCrearTransaccionPayload(ComandoIntegracion):
     id_propiedad = String()
-    fecha_creacion = Long()
 
 
 class ComandoCrearTransaccion(ComandoIntegracion):

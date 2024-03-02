@@ -11,6 +11,7 @@ from src.mercadoalpes.modulos.mercado.aplicacion.queries.obtener_transaccion imp
 from src.mercadoalpes.seedwork.aplicacion.comandos import ejecutar_comando
 from src.mercadoalpes.seedwork.aplicacion.queries import ejecutar_query
 
+
 bp = api.crear_blueprint('mercado', '/mercado')
 
 
@@ -18,12 +19,11 @@ bp = api.crear_blueprint('mercado', '/mercado')
 def registrar_transaccion():
     try:
         transaction_dict = request.json
-
+        
         map_transaction = MapeadorTransaccionDTOJson()
         transaction_dto = map_transaction.externo_a_dto(transaction_dict)
         st = ServicioTransaccion()
         dto_final = st.crear_transaccion(transaction_dto)
-
         return map_transaction.dto_a_externo(dto_final)
     except ExcepcionDominio as e:
         return Response(json.dumps(dict(error=str(e))), status=400, mimetype='application/json')

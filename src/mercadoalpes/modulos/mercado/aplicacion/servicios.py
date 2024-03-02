@@ -4,7 +4,9 @@ from src.mercadoalpes.seedwork.aplicacion.servicios import Servicio
 from src.mercadoalpes.modulos.mercado.infraestructura.fabricas import FabricaRepositorio
 from src.mercadoalpes.modulos.mercado.dominio.repositorios import RepositorioTransacciones
 from src.mercadoalpes.modulos.mercado.dominio.fabricas import FabricaHistorico
+from src.mercadoalpes.seedwork.infraestructura.uow import UnidadTrabajoPuerto
 from .dto import TransaccionDTO
+
 
 from .mapeadores import MapeadorTransaccion
 from ..dominio.entidades import Transaccion
@@ -27,9 +29,13 @@ class ServicioTransaccion(Servicio):
     def crear_transaccion(self, transaccion_dto: TransaccionDTO) -> TransaccionDTO:
         mapeador_transaccion = MapeadorTransaccion()
         transaccion: Transaccion = self.fabrica_historicos.crear_objeto(transaccion_dto, mapeador_transaccion)
+        transaccion.crear_transaccion(transaccion=transaccion)
 
         repositorio = self.fabrica_repositorio.crear_objeto(RepositorioTransacciones.__class__)
-        repositorio.agregar(transaccion)
+        
+        UnidadTrabajoPuerto.registrar_batch(repositorio.agregar, transaccion)
+        UnidadTrabajoPuerto.savepoint()
+        UnidadTrabajoPuerto.commit()
 
         return self.fabrica_historicos.crear_objeto(transaccion, mapeador_transaccion)
 

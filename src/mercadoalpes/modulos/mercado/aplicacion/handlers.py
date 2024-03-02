@@ -5,6 +5,8 @@ class HandlerTransaccionIntegracion(Handler):
 
     @staticmethod
     def handle_transaccion_creada(evento):
+        print("estoy en el handler")
+        print(evento)
         despachador = Despachador()
         despachador.publicar_evento(evento, 'eventos-transaccion')
 

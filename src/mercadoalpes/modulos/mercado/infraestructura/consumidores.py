@@ -51,6 +51,7 @@ def suscribirse_a_eventos():
                                        schema=AvroSchema(EventoTransaccionCreada))
 
         while True:
+            
             mensaje = consumidor.receive()
             print(f'Evento recibido: {mensaje.value().data}')
 
@@ -69,10 +70,11 @@ def suscribirse_a_comandos():
     try:
         cliente = pulsar.Client(f'pulsar://{utils.broker_host()}:6650')
         consumidor = cliente.subscribe('comandos-transaccion', consumer_type=_pulsar.ConsumerType.Shared,
-                                       subscription_name='aeroalpes-sub-comandos',
+                                       subscription_name='mercado-sub-comandos',
                                        schema=AvroSchema(ComandoCrearTransaccion))
 
         while True:
+            print("estoy EN COMANDOS")
             mensaje = consumidor.receive()
             print(f'Comando recibido: {mensaje.value().data}')
 

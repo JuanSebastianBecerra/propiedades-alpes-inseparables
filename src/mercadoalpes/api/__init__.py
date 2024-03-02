@@ -5,6 +5,9 @@ import threading
 # Identifica el directorio base
 basedir = os.path.abspath(os.path.dirname(__file__))
 
+def importar_handlers():
+    import src.mercadoalpes.modulos.mercado.aplicacion
+
 def importar_modelos_alchemy():
     pass
 
@@ -36,6 +39,7 @@ def create_app(configuracion=None):
     from src.mercadoalpes.config.db import db
 
     importar_modelos_alchemy()
+    importar_handlers()
 
     from . import mercado
 
@@ -43,8 +47,7 @@ def create_app(configuracion=None):
 
     with app.app_context():
         db.create_all()
-        if not app.config.get('TESTING'):
-            comenzar_consumidor()
+        comenzar_consumidor()
     
     @app.route("/health-status")
     def health():
