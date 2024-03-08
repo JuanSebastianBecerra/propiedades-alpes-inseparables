@@ -33,6 +33,9 @@ def create_app(configuracion=None):
 
     with app.app_context():
         db.create_all()
+
+        from src.mercadoalpes.modulos.sagas.aplicacion.coordinadores.saga_transaccion import CoordinadorTransacciones
+        CoordinadorTransacciones()
     
     @app.route("/health-status")
     def health():
