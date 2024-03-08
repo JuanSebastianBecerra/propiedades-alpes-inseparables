@@ -157,6 +157,26 @@ services:
     ports:
       - "5001:5001"
 
+  # Servicio BFF
+  bff:
+    build:
+      context: .
+      dockerfile: bbf.Dockerfile
+    container_name: bbf_web
+    hostname: bbf_web
+    image: bbf_web/flask 
+    profiles: ["bff", "monolito"]
+    depends_on:
+      - mercadoalpes
+      - broker
+    environment:
+      - MERCADO_ADDRESS=mercadoalpes
+      - BROKER_HOST=broker
+    networks:
+      - pulsar
+    ports:
+      - "8003:8003"   
+      
 #version: '3.6'
     
 #services:
