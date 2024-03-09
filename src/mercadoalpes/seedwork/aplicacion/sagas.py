@@ -5,8 +5,6 @@ import uuid
 import datetime
 
 from ..dominio.eventos import EventoDominio
-from ...modulos.mercado.aplicacion.comandos.crear_transaccion import CrearTransaccion
-from ...modulos.sagas.aplicacion.comandos.propiedades import CambiarEstadoPropiedad
 
 
 class CoordinadorSaga(ABC):
@@ -31,6 +29,7 @@ class CoordinadorSaga(ABC):
 
     def publicar_comando_prueba(self, comando: Comando):
         self.construir_comando_prueba(comando)
+        ejecutar_comando(comando)
 
     @abstractmethod
     def inicializar_pasos(self):
@@ -106,7 +105,7 @@ class CoordinadorOrquestacion(CoordinadorSaga, ABC):
         elif isinstance(evento, paso.error):
             self.publicar_comando(evento, self.pasos[index - 1].compensacion)
         elif isinstance(evento, paso.evento):
-            self.publicar_comando(evento, self.pasos[index + 1].compensacion)
+            self.publicar_comando(evento, self.pasos[index + 1].comando)
 
     def procesar_evento_prueba(self):
         for i, paso in enumerate(self.pasos):

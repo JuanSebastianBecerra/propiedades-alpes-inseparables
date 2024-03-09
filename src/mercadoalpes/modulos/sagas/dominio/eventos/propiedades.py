@@ -19,3 +19,6 @@ class CambioEstadoFallido(EventoPropiedad):
 class ConfirmacionCambioEstadoRevertido(EventoPropiedad):
     id_propiedad: str = None
     tipo_transaccion: str = None
+
+    def __init__(self):
+        print("ejecute la confirmacion de estado")

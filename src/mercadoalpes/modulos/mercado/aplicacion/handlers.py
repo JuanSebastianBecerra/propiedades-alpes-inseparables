@@ -6,10 +6,9 @@ from src.mercadoalpes.modulos.sagas.aplicacion.coordinadores.saga_transaccion im
 class HandlerTransaccionIntegracion(Handler):
 
     @staticmethod
-    def handle_transaccion_creada():
-        oir_mensaje_prueba()
-        # despachador = Despachador()
-        # despachador.publicar_evento(evento, 'eventos-mercado')
+    def handle_transaccion_creada(evento):
+        despachador = Despachador()
+        despachador.publicar_evento(evento, 'eventos-mercado')
 
 
     

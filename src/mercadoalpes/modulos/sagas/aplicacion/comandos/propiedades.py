@@ -1,4 +1,4 @@
 class CambiarEstadoPropiedad():
 
     def health(self):
-        print("pase por paso 2")
+        print("tengo que cambiar el estado de la propiedad")

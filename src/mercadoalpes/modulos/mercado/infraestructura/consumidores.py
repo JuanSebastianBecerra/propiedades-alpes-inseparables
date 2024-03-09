@@ -7,6 +7,7 @@ import traceback
 
 from src.mercadoalpes.modulos.mercado.infraestructura.schema.v1.eventos import EventoTransaccionCreada
 from src.mercadoalpes.modulos.mercado.infraestructura.schema.v1.comandos import ComandoCrearTransaccion
+from src.mercadoalpes.modulos.sagas.aplicacion.coordinadores.saga_transaccion import oir_mensaje
 from src.mercadoalpes.seedwork.infraestructura import utils
 
 def suscribirse_a_eventos():
@@ -20,7 +21,7 @@ def suscribirse_a_eventos():
         while True:
             mensaje = consumidor.receive()
             print(f'Evento recibido: {mensaje.value().data}')
-
+            oir_mensaje(mensaje)
             consumidor.acknowledge(mensaje)
 
         cliente.close()
