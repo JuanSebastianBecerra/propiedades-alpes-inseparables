@@ -17,8 +17,9 @@ class CoordinadorTransacciones(CoordinadorOrquestacion):
                         compensacion=CancelarTransaccion),
             Transaccion(index=2, comando=CambiarEstadoPropiedad, evento=EstadoPropiedadCambiado, error=CambioEstadoFallido,
                         compensacion=ConfirmacionCambioEstadoRevertido),
-            Fin(index=5)
+            Fin()
         ]
+        return self.pasos
 
     def iniciar(self):
         self.persistir_en_saga_log(self.pasos[0])
@@ -48,4 +49,5 @@ def oir_mensaje(mensaje):
 
 def oir_mensaje_prueba():
     coordinador = CoordinadorTransacciones()
+    coordinador.set_pasos(coordinador.inicializar_pasos())
     coordinador.procesar_evento_prueba()

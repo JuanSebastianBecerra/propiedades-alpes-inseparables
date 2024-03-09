@@ -2,7 +2,7 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 
 from src.mercadoalpes.seedwork.dominio.entidades import AgregacionRaiz
-from src.mercadoalpes.modulos.mercado.dominio.eventos import TransaccionCreada
+from src.mercadoalpes.modulos.mercado.dominio.eventos.transacciones import TransaccionCreada
 
 import uuid
 
