@@ -99,7 +99,9 @@ class CoordinadorOrquestacion(CoordinadorSaga, ABC):
         return len(self.pasos) - 1
 
     def procesar_evento(self, evento: EventoDominio):
+        print(evento)
         paso, index = self.obtener_paso_dado_un_evento(evento)
+        print(paso)
         if self.es_ultima_transaccion(index) and not isinstance(evento, paso.error):
             self.terminar()
         elif isinstance(evento, paso.error):

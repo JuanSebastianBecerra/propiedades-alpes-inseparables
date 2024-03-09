@@ -8,6 +8,16 @@ basedir = os.path.abspath(os.path.dirname(__file__))
 def importar_modelos_alchemy():
     pass
 
+def comenzar_consumidor():
+    import threading
+    import src.mercadoalpes.modulos.mercado.infraestructura.consumidores as mercado
+
+    # Suscripción a eventos
+    threading.Thread(target=mercado.suscribirse_a_eventos).start()
+
+    # Suscripción a comandos
+    threading.Thread(target=mercado.suscribirse_a_comandos).start()
+
 def create_app(configuracion=None):
     # Init la aplicacion de Flask
     app = Flask(__name__, instance_relative_config=True)
@@ -26,6 +36,7 @@ def create_app(configuracion=None):
     from src.mercadoalpes.config.db import db
 
     importar_modelos_alchemy()
+    comenzar_consumidor()
 
     from . import mercado
 

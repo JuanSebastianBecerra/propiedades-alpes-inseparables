@@ -14,7 +14,7 @@ def suscribirse_a_eventos():
     cliente = None
     try:
         cliente = pulsar.Client(f'pulsar://{utils.broker_host()}:6650')
-        consumidor = cliente.subscribe('eventos-transaccion', consumer_type=_pulsar.ConsumerType.Shared,
+        consumidor = cliente.subscribe('eventos-mercado', consumer_type=_pulsar.ConsumerType.Shared,
                                        subscription_name='aeroalpes-sub-eventos',
                                        schema=AvroSchema(EventoTransaccionCreada))
 
@@ -36,7 +36,7 @@ def suscribirse_a_comandos():
     cliente = None
     try:
         cliente = pulsar.Client(f'pulsar://{utils.broker_host()}:6650')
-        consumidor = cliente.subscribe('comandos-transaccion', consumer_type=_pulsar.ConsumerType.Shared,
+        consumidor = cliente.subscribe('comandos-mercado', consumer_type=_pulsar.ConsumerType.Shared,
                                        subscription_name='aeroalpes-sub-comandos',
                                        schema=AvroSchema(ComandoCrearTransaccion))
 

@@ -7,6 +7,7 @@ from src.mercadoalpes.modulos.sagas.dominio.eventos.propiedades import EstadoPro
 from src.mercadoalpes.seedwork.aplicacion.comandos import Comando
 from src.mercadoalpes.seedwork.aplicacion.sagas import Transaccion, CoordinadorOrquestacion, Inicio, Fin
 from src.mercadoalpes.seedwork.dominio.eventos import EventoDominio
+from src.mercadoalpes.modulos.mercado.infraestructura.schema.v1.eventos import EventoTransaccionCreada, EventoTransaccionCreadaPayload
 
 
 class CoordinadorTransacciones(CoordinadorOrquestacion):
@@ -14,7 +15,7 @@ class CoordinadorTransacciones(CoordinadorOrquestacion):
     def inicializar_pasos(self):
         self.pasos = [
             Inicio(index=0),
-            Transaccion(index=1, comando=CrearTransaccion, evento=TransaccionCreada, error=CreacionTransaccionFallida,
+            Transaccion(index=1, comando=CrearTransaccion, evento=EventoTransaccionCreada, error=CreacionTransaccionFallida,
                         compensacion=CancelarTransaccion),
             Transaccion(index=2, comando=CambiarEstadoPropiedad, evento=EstadoPropiedadCambiado, error=CambioEstadoFallido,
                         compensacion=ConfirmacionCambioEstadoRevertido),
@@ -55,6 +56,7 @@ class CoordinadorTransacciones(CoordinadorOrquestacion):
 
 # TODO Agregue un Listener/Handler para que se puedan redireccionar eventos de dominio
 def oir_mensaje(mensaje):
+    print(mensaje)
     if isinstance(mensaje, EventoDominio):
         coordinador = CoordinadorTransacciones()
         coordinador.procesar_evento(mensaje)
