@@ -45,3 +45,7 @@ def oir_mensaje(mensaje):
         coordinador.procesar_evento(mensaje)
     else:
         raise NotImplementedError("El mensaje no es evento de Dominio")
+
+def oir_mensaje_prueba():
+    coordinador = CoordinadorTransacciones()
+    coordinador.procesar_evento_prueba()

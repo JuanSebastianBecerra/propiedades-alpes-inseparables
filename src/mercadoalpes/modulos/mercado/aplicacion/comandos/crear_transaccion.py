@@ -15,7 +15,9 @@ class CrearTransaccion(Comando):
     id: str
     id_propiedad: str
     tipo_transaccion: str
-    
+
+    def health(self):
+        print("pase por paso 1")
 
 class CrearTransaccionHandler(CrearTransaccionBaseHandler):
     def handle(self, comando: CrearTransaccion):

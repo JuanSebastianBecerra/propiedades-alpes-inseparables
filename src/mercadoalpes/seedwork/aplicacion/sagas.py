@@ -19,7 +19,7 @@ class CoordinadorSaga(ABC):
         ...
 
     def publicar_comando(self,evento: EventoDominio, tipo_comando: type):
-        comando = self.construir_comando(evento, tipo_comando)
+        comando = construir_comando(evento, tipo_comando)
         ejecutar_comando(comando)
 
     @abstractmethod
@@ -73,6 +73,15 @@ class CoordinadorOrquestacion(CoordinadorSaga, ABC):
             if isinstance(evento, paso.evento) or isinstance(evento, paso.error):
                 return paso, i
         raise Exception("Evento no hace parte de la transacción")
+
+    def obtener_paso_dado_prueba(self):
+        for i, paso in enumerate(pasos):
+            if not isinstance(paso, Transaccion):
+                continue
+
+            if isinstance(evento, paso.evento) or isinstance(evento, paso.error):
+                return paso, i
+        raise Exception("Evento no hace parte de la transacción")
                 
     def es_ultima_transaccion(self, index):
         return len(self.pasos) - 1
@@ -85,5 +94,14 @@ class CoordinadorOrquestacion(CoordinadorSaga, ABC):
             self.publicar_comando(evento, self.pasos[index-1].compensacion)
         elif isinstance(evento, paso.evento):
             self.publicar_comando(evento, self.pasos[index+1].compensacion)
+
+
+    def procesar_evento_prueba(self,):
+        paso, index = self.obtener_paso_dado_prueba()
+        if self.es_ultima_transaccion(index):
+            self.terminar()
+        else:
+            self.pasos[index+1].comando.health()
+
 
 
