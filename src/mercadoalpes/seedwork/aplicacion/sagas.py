@@ -92,11 +92,11 @@ class CoordinadorOrquestacion(CoordinadorSaga, ABC):
 
 
     def procesar_evento_prueba(self,):
-        paso, index = self.obtener_paso_dado_prueba()
-        if self.es_ultima_transaccion(index):
-            self.terminar()
-        else:
-            self.pasos[index+1].comando.health()
+        for i, paso in enumerate(pasos):
+            if self.es_ultima_transaccion(i):
+                self.terminar()
+            else:
+                paso.comando.health()
 
 
 
