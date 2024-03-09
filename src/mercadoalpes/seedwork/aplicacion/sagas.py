@@ -20,9 +20,17 @@ class CoordinadorSaga(ABC):
     def construir_comando(self, evento: EventoDominio, tipo_comando: type) -> Comando:
         ...
 
+    @abstractmethod
+    def construir_comando_prueba(self, comando: Comando) -> Comando:
+        ...
+
     def publicar_comando(self, evento: EventoDominio, tipo_comando: type):
-        comando = construir_comando(evento, tipo_comando)
+        comando = self.construir_comando(evento, tipo_comando)
         ejecutar_comando(comando)
+
+
+    def publicar_comando_prueba(self, comando: Comando):
+        self.construir_comando_prueba(comando)
 
     @abstractmethod
     def inicializar_pasos(self):
@@ -101,12 +109,6 @@ class CoordinadorOrquestacion(CoordinadorSaga, ABC):
             self.publicar_comando(evento, self.pasos[index + 1].compensacion)
 
     def procesar_evento_prueba(self):
-        comando = None
         for i, paso in enumerate(self.pasos):
             if hasattr(paso, 'comando'):
-                if paso.comando == CrearTransaccion:
-                    comando = CrearTransaccion(fecha_creacion="", fecha_actualizacion="",id="", id_propiedad="", tipo_transaccion="")
-                elif paso.comando == CambiarEstadoPropiedad:
-                    comando = CambiarEstadoPropiedad()
-                if comando is not None:
-                    comando.health()
+                self.publicar_comando_prueba(paso.comando)

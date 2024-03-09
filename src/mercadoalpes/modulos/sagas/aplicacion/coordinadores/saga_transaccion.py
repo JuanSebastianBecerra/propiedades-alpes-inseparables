@@ -4,6 +4,7 @@ from src.mercadoalpes.modulos.mercado.dominio.eventos.transacciones import Cance
 from src.mercadoalpes.modulos.sagas.aplicacion.comandos.propiedades import CambiarEstadoPropiedad
 from src.mercadoalpes.modulos.sagas.dominio.eventos.propiedades import EstadoPropiedadCambiado, CambioEstadoFallido, \
     ConfirmacionCambioEstadoRevertido
+from src.mercadoalpes.seedwork.aplicacion.comandos import Comando
 from src.mercadoalpes.seedwork.aplicacion.sagas import Transaccion, CoordinadorOrquestacion, Inicio, Fin
 from src.mercadoalpes.seedwork.dominio.eventos import EventoDominio
 
@@ -37,6 +38,19 @@ class CoordinadorTransacciones(CoordinadorOrquestacion):
         # Por ejemplo si el evento que llega es ReservaCreada y el tipo_comando es PagarReserva
         # Debemos usar los atributos de ReservaCreada para crear el comando PagarReserva
         ...
+
+    def construir_comando_prueba(self, comando: Comando):
+        # TODO Transforma un evento en la entrada de un comando
+        # Por ejemplo si el evento que llega es ReservaCreada y el tipo_comando es PagarReserva
+        # Debemos usar los atributos de ReservaCreada para crear el comando PagarReserva
+        if comando == CrearTransaccion:
+            comando = CrearTransaccion(fecha_creacion="", fecha_actualizacion="", id="", id_propiedad="",
+                                       tipo_transaccion="")
+        elif comando == CambiarEstadoPropiedad:
+            comando = CambiarEstadoPropiedad()
+        if comando is not None:
+            comando.health()
+            print("pase por aca")
 
 
 # TODO Agregue un Listener/Handler para que se puedan redireccionar eventos de dominio
