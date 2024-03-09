@@ -76,13 +76,8 @@ class CoordinadorOrquestacion(CoordinadorSaga, ABC):
 
     def obtener_paso_dado_prueba(self):
         for i, paso in enumerate(pasos):
-            if not isinstance(paso, Transaccion):
-                continue
+            return paso, i
 
-            if isinstance(evento, paso.evento) or isinstance(evento, paso.error):
-                return paso, i
-        raise Exception("Evento no hace parte de la transacción")
-                
     def es_ultima_transaccion(self, index):
         return len(self.pasos) - 1
 
