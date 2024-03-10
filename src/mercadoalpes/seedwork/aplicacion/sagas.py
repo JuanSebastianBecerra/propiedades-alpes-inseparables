@@ -18,18 +18,10 @@ class CoordinadorSaga(ABC):
     def construir_comando(self, evento: EventoDominio, tipo_comando: type) -> Comando:
         ...
 
-    @abstractmethod
-    def construir_comando_prueba(self, comando: Comando) -> Comando:
-        ...
-
-    def publicar_comando(self, evento: EventoDominio, tipo_comando: type):
-        comando = self.construir_comando(evento, tipo_comando)
+    def publicar_comando(self,mensaje, evento: EventoDominio, tipo_comando: type):
+        comando = self.construir_comando(mensaje, evento, tipo_comando)
         # ejecutar_comando(comando)
 
-
-    def publicar_comando_prueba(self, comando: Comando):
-        self.construir_comando_prueba(comando)
-        ejecutar_comando(comando)
 
     @abstractmethod
     def inicializar_pasos(self):
@@ -93,23 +85,15 @@ class CoordinadorOrquestacion(CoordinadorSaga, ABC):
                     return paso, i
         raise Exception("Evento no hace parte de la transacción")
 
-    def obtener_paso_dado_prueba(self):
-        for i, paso in enumerate(pasos):
-            return paso, i
 
     def es_ultima_transaccion(self, index):
         return len(self.pasos) - 1 == index
 
-    def procesar_evento(self, evento: EventoDominio):
+    def procesar_evento(self, mensaje, evento: EventoDominio):
         paso, index = self.obtener_paso_dado_un_evento(evento)
         if self.es_ultima_transaccion(index) and not type(evento) == type(paso.error):
             self.terminar()
         elif type(evento) == type(paso.error):
-            self.publicar_comando(evento, self.pasos[index - 1].compensacion)
+            self.publicar_comando(mensaje, evento, self.pasos[index - 1].compensacion)
         elif isinstance(evento, paso.evento) or type(evento) == type(paso.evento):
-            self.publicar_comando(evento, self.pasos[index + 1].comando)
-
-    def procesar_evento_prueba(self):
-        for i, paso in enumerate(self.pasos):
-            if hasattr(paso, 'comando'):
-                self.publicar_comando_prueba(paso.comando)
+            self.publicar_comando(mensaje, evento, self.pasos[index + 1].comando)

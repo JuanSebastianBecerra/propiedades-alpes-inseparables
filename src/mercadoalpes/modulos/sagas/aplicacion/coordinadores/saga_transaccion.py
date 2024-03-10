@@ -30,45 +30,23 @@ class CoordinadorTransacciones(CoordinadorOrquestacion):
     def terminar(self):
         self.persistir_en_saga_log(self.pasos[-1])
 
-    def persistir_en_saga_log(self, mensaje):
+    def persistir_en_saga_log(self, mensaje, index_paso, evento, next_step):
         # TODO Persistir estado en DB
         # Probablemente usted podría usar un repositorio para ello
         ...
 
-    def construir_comando(self, evento: EventoDominio, tipo_comando: type):
-        # TODO Transforma un evento en la entrada de un comando
-        # Por ejemplo si el evento que llega es ReservaCreada y el tipo_comando es PagarReserva
-        # Debemos usar los atributos de ReservaCreada para crear el comando PagarReserva
+    def construir_comando(self,mensaje, evento: EventoDominio, tipo_comando: type):
         comando = Comando()
         if type(evento) == type(EventoTransaccionCreada) and type(tipo_comando) == type(CambiarEstadoPropiedad):
             comando = CambiarEstadoPropiedad()
         return comando
 
-    def construir_comando_prueba(self, comando: Comando):
-        # TODO Transforma un evento en la entrada de un comando
-        # Por ejemplo si el evento que llega es ReservaCreada y el tipo_comando es PagarReserva
-        # Debemos usar los atributos de ReservaCreada para crear el comando PagarReserva
-        if comando == CrearTransaccion:
-            comando = CrearTransaccion(fecha_creacion="", fecha_actualizacion="", id="", id_propiedad="",
-                                       tipo_transaccion="")
-        elif comando == CambiarEstadoPropiedad:
-            comando = CambiarEstadoPropiedad()
-        if comando is not None:
-            comando.health()
-            print("pase por aca")
-
 
 # TODO Agregue un Listener/Handler para que se puedan redireccionar eventos de dominio
 def oir_mensaje(mensaje, event_class):
-    # if isinstance(event_class, EventoDominio) or isinstance(event_class, EventoIntegracion):
     if type(event_class) == type(EventoDominio) or type(event_class) == type(EventoIntegracion):
         coordinador = CoordinadorTransacciones()
         coordinador.set_pasos(coordinador.inicializar_pasos())
-        coordinador.procesar_evento(event_class)
+        coordinador.procesar_evento(mensaje, event_class)
     else:
         raise NotImplementedError("El mensaje no es evento de Dominio")
-
-def oir_mensaje_prueba():
-    coordinador = CoordinadorTransacciones()
-    coordinador.set_pasos(coordinador.inicializar_pasos())
-    coordinador.procesar_evento_prueba()
