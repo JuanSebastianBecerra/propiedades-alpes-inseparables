@@ -23,6 +23,7 @@ class CoordinadorSaga(ABC):
         ...
 
     def publicar_comando(self, evento: EventoDominio, tipo_comando: type):
+        print('********************')
         comando = self.construir_comando(evento, tipo_comando)
         ejecutar_comando(comando)
 
@@ -83,12 +84,14 @@ class CoordinadorOrquestacion(CoordinadorSaga, ABC):
         self.pasos: list[Paso] = pasos
 
     def obtener_paso_dado_un_evento(self, evento: EventoDominio):
-        for i, paso in enumerate(pasos):
-            if not isinstance(paso, Transaccion):
+        for i, paso in enumerate(self.pasos):
+            if not isinstance(paso, Paso):
                 continue
-
-            if isinstance(evento, paso.evento) or isinstance(evento, paso.error):
-                return paso, i
+               
+            if hasattr(paso, 'evento') or hasattr(paso, 'error'):
+                # if isinstance(evento, paso.evento) or isinstance(evento, paso.error):
+                if type(evento) == type(paso.evento) or type(evento) == type(paso.error):
+                    return paso, i
         raise Exception("Evento no hace parte de la transacción")
 
     def obtener_paso_dado_prueba(self):
@@ -99,14 +102,15 @@ class CoordinadorOrquestacion(CoordinadorSaga, ABC):
         return len(self.pasos) - 1
 
     def procesar_evento(self, evento: EventoDominio):
-        print(evento)
         paso, index = self.obtener_paso_dado_un_evento(evento)
-        print(paso)
-        if self.es_ultima_transaccion(index) and not isinstance(evento, paso.error):
+        print('77777777777')
+        print(type(evento))
+        print(type(paso.evento))
+        if self.es_ultima_transaccion(index) and not type(evento) == type(paso.error):
             self.terminar()
-        elif isinstance(evento, paso.error):
+        elif type(evento) == type(paso.error):
             self.publicar_comando(evento, self.pasos[index - 1].compensacion)
-        elif isinstance(evento, paso.evento):
+        elif type(evento) == type(paso.evento):
             self.publicar_comando(evento, self.pasos[index + 1].comando)
 
     def procesar_evento_prueba(self):

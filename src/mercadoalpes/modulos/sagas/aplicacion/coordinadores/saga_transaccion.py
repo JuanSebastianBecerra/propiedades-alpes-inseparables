@@ -7,6 +7,7 @@ from src.mercadoalpes.modulos.sagas.dominio.eventos.propiedades import EstadoPro
 from src.mercadoalpes.seedwork.aplicacion.comandos import Comando
 from src.mercadoalpes.seedwork.aplicacion.sagas import Transaccion, CoordinadorOrquestacion, Inicio, Fin
 from src.mercadoalpes.seedwork.dominio.eventos import EventoDominio
+from src.mercadoalpes.seedwork.infraestructura.schema.v1.eventos import EventoIntegracion
 from src.mercadoalpes.modulos.mercado.infraestructura.schema.v1.eventos import EventoTransaccionCreada, EventoTransaccionCreadaPayload
 
 
@@ -38,7 +39,13 @@ class CoordinadorTransacciones(CoordinadorOrquestacion):
         # TODO Transforma un evento en la entrada de un comando
         # Por ejemplo si el evento que llega es ReservaCreada y el tipo_comando es PagarReserva
         # Debemos usar los atributos de ReservaCreada para crear el comando PagarReserva
-        ...
+        print(type(evento))
+        print(type(EventoTransaccionCreada))
+        print(type(tipo_comando))
+        print(type(CambiarEstadoPropiedad))
+        if type(evento) == type(EventoTransaccionCreada) and type(tipo_comando) == type(CambiarEstadoPropiedad):
+            print('-------------------------')
+            comando = CambiarEstadoPropiedad()
 
     def construir_comando_prueba(self, comando: Comando):
         # TODO Transforma un evento en la entrada de un comando
@@ -55,11 +62,12 @@ class CoordinadorTransacciones(CoordinadorOrquestacion):
 
 
 # TODO Agregue un Listener/Handler para que se puedan redireccionar eventos de dominio
-def oir_mensaje(mensaje):
-    print(mensaje)
-    if isinstance(mensaje, EventoDominio):
+def oir_mensaje(mensaje, event_class):
+    # if isinstance(event_class, EventoDominio) or isinstance(event_class, EventoIntegracion):
+    if type(event_class) == type(EventoDominio) or type(event_class) == type(EventoIntegracion):
         coordinador = CoordinadorTransacciones()
-        coordinador.procesar_evento(mensaje)
+        coordinador.set_pasos(coordinador.inicializar_pasos())
+        coordinador.procesar_evento(event_class)
     else:
         raise NotImplementedError("El mensaje no es evento de Dominio")
 

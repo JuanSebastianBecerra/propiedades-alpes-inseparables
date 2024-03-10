@@ -4,6 +4,7 @@ import uuid
 import time
 import logging
 import traceback
+import json
 
 from src.mercadoalpes.modulos.mercado.infraestructura.schema.v1.eventos import EventoTransaccionCreada
 from src.mercadoalpes.modulos.mercado.infraestructura.schema.v1.comandos import ComandoCrearTransaccion
@@ -21,7 +22,7 @@ def suscribirse_a_eventos():
         while True:
             mensaje = consumidor.receive()
             print(f'Evento recibido: {mensaje.value().data}')
-            oir_mensaje(mensaje)
+            oir_mensaje(mensaje, eval(eval(consumidor._schema.schema_info().schema())['name']))
             consumidor.acknowledge(mensaje)
 
         cliente.close()
