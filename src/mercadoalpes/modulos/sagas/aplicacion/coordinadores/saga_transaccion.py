@@ -39,13 +39,10 @@ class CoordinadorTransacciones(CoordinadorOrquestacion):
         # TODO Transforma un evento en la entrada de un comando
         # Por ejemplo si el evento que llega es ReservaCreada y el tipo_comando es PagarReserva
         # Debemos usar los atributos de ReservaCreada para crear el comando PagarReserva
-        print(type(evento))
-        print(type(EventoTransaccionCreada))
-        print(type(tipo_comando))
-        print(type(CambiarEstadoPropiedad))
+        comando = Comando()
         if type(evento) == type(EventoTransaccionCreada) and type(tipo_comando) == type(CambiarEstadoPropiedad):
-            print('-------------------------')
             comando = CambiarEstadoPropiedad()
+        return comando
 
     def construir_comando_prueba(self, comando: Comando):
         # TODO Transforma un evento en la entrada de un comando
