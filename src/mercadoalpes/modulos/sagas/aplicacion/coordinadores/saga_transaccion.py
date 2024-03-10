@@ -1,3 +1,4 @@
+import requests
 from src.mercadoalpes.modulos.mercado.aplicacion.comandos.crear_transaccion import CrearTransaccion
 from src.mercadoalpes.modulos.mercado.aplicacion.mapeadores import MapeadorSagalogDTOJson
 from src.mercadoalpes.modulos.mercado.aplicacion.servicios import ServicioSagalog
@@ -44,16 +45,14 @@ class CoordinadorTransacciones(CoordinadorOrquestacion):
             "index_paso": str(index_paso),
             "siguiente_accion": str(next_step)
         }
-        map_sagalog = MapeadorSagalogDTOJson()
-        sagalog_dto = map_sagalog.externo_a_dto(sagalog_dict)
-        st = ServicioSagalog()
-        st.crear_sagalog(sagalog_dto)
+        api_url = "http://127.0.0.1:5000/mercado/sagalog"
+        requests.post(api_url, json=sagalog_dict)
 
-    def construir_comando(self, mensaje, evento: EventoDominio, tipo_comando: type):
+    def construir_comando(self, mensaje, evento: EventoDominio, tipo_comando: type,  index_paso: int):
         comando = Comando()
         if type(evento) == type(EventoTransaccionCreada) and type(tipo_comando) == type(CambiarEstadoPropiedad):
             comando = CambiarEstadoPropiedad()
-            self.persistir_en_saga_log(mensaje, '2', evento, CambiarEstadoPropiedad.__name__)
+            self.persistir_en_saga_log(mensaje, index_paso, evento, CambiarEstadoPropiedad.__name__)
         return comando
 
 
