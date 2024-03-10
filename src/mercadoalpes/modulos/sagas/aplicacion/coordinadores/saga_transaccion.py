@@ -1,4 +1,6 @@
 from src.mercadoalpes.modulos.mercado.aplicacion.comandos.crear_transaccion import CrearTransaccion
+from src.mercadoalpes.modulos.mercado.aplicacion.mapeadores import MapeadorSagalogDTOJson
+from src.mercadoalpes.modulos.mercado.aplicacion.servicios import ServicioSagalog
 from src.mercadoalpes.modulos.mercado.dominio.eventos.transacciones import CancelarTransaccion, \
     CreacionTransaccionFallida, TransaccionCreada
 from src.mercadoalpes.modulos.sagas.aplicacion.comandos.propiedades import CambiarEstadoPropiedad
@@ -8,7 +10,8 @@ from src.mercadoalpes.seedwork.aplicacion.comandos import Comando
 from src.mercadoalpes.seedwork.aplicacion.sagas import Transaccion, CoordinadorOrquestacion, Inicio, Fin
 from src.mercadoalpes.seedwork.dominio.eventos import EventoDominio
 from src.mercadoalpes.seedwork.infraestructura.schema.v1.eventos import EventoIntegracion
-from src.mercadoalpes.modulos.mercado.infraestructura.schema.v1.eventos import EventoTransaccionCreada, EventoTransaccionCreadaPayload
+from src.mercadoalpes.modulos.mercado.infraestructura.schema.v1.eventos import EventoTransaccionCreada, \
+    EventoTransaccionCreadaPayload
 
 
 class CoordinadorTransacciones(CoordinadorOrquestacion):
@@ -16,9 +19,11 @@ class CoordinadorTransacciones(CoordinadorOrquestacion):
     def inicializar_pasos(self):
         self.pasos = [
             Inicio(index=0),
-            Transaccion(index=1, comando=CrearTransaccion, evento=EventoTransaccionCreada, error=CreacionTransaccionFallida,
+            Transaccion(index=1, comando=CrearTransaccion, evento=EventoTransaccionCreada,
+                        error=CreacionTransaccionFallida,
                         compensacion=CancelarTransaccion),
-            Transaccion(index=2, comando=CambiarEstadoPropiedad, evento=EstadoPropiedadCambiado, error=CambioEstadoFallido,
+            Transaccion(index=2, comando=CambiarEstadoPropiedad, evento=EstadoPropiedadCambiado,
+                        error=CambioEstadoFallido,
                         compensacion=ConfirmacionCambioEstadoRevertido),
             Fin()
         ]
@@ -33,12 +38,22 @@ class CoordinadorTransacciones(CoordinadorOrquestacion):
     def persistir_en_saga_log(self, mensaje, index_paso, evento, next_step):
         # TODO Persistir estado en DB
         # Probablemente usted podría usar un repositorio para ello
-        ...
+        sagalog_dict = {
+            "mensaje": str(mensaje),
+            "tipo_evento": str(evento),
+            "index_paso": str(index_paso),
+            "siguiente_accion": str(next_step)
+        }
+        map_sagalog = MapeadorSagalogDTOJson()
+        sagalog_dto = map_sagalog.externo_a_dto(sagalog_dict)
+        st = ServicioSagalog()
+        st.crear_sagalog(sagalog_dto)
 
-    def construir_comando(self,mensaje, evento: EventoDominio, tipo_comando: type):
+    def construir_comando(self, mensaje, evento: EventoDominio, tipo_comando: type):
         comando = Comando()
         if type(evento) == type(EventoTransaccionCreada) and type(tipo_comando) == type(CambiarEstadoPropiedad):
             comando = CambiarEstadoPropiedad()
+            self.persistir_en_saga_log(mensaje, '2', evento, CambiarEstadoPropiedad.__name__)
         return comando
 
 

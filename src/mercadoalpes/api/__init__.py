@@ -36,7 +36,7 @@ def create_app(configuracion=None):
     from src.mercadoalpes.config.db import db
 
     importar_modelos_alchemy()
-    comenzar_consumidor()
+    # comenzar_consumidor()
 
     from . import mercado
 

@@ -15,11 +15,11 @@ class CoordinadorSaga(ABC):
         ...
 
     @abstractmethod
-    def construir_comando(self, evento: EventoDominio, tipo_comando: type) -> Comando:
+    def construir_comando(self, evento: EventoDominio, tipo_comando: type, index_paso: int) -> Comando:
         ...
 
-    def publicar_comando(self,mensaje, evento: EventoDominio, tipo_comando: type):
-        comando = self.construir_comando(mensaje, evento, tipo_comando)
+    def publicar_comando(self,mensaje, evento: EventoDominio, tipo_comando: type, index_paso: int):
+        comando = self.construir_comando(mensaje, evento, tipo_comando, index_paso)
         # ejecutar_comando(comando)
 
 
@@ -94,6 +94,6 @@ class CoordinadorOrquestacion(CoordinadorSaga, ABC):
         if self.es_ultima_transaccion(index) and not type(evento) == type(paso.error):
             self.terminar()
         elif type(evento) == type(paso.error):
-            self.publicar_comando(mensaje, evento, self.pasos[index - 1].compensacion)
+            self.publicar_comando(mensaje, evento, self.pasos[index - 1].compensacion, index)
         elif isinstance(evento, paso.evento) or type(evento) == type(paso.evento):
-            self.publicar_comando(mensaje, evento, self.pasos[index + 1].comando)
+            self.publicar_comando(mensaje, evento, self.pasos[index + 1].comando, index)
