@@ -40,7 +40,7 @@ class CoordinadorTransacciones(CoordinadorOrquestacion):
         # TODO Persistir estado en DB
         # Probablemente usted podría usar un repositorio para ello
         sagalog_dict = {
-            "mensaje": str(mensaje),
+            "mensaje": str(mensaje.value().data),
             "tipo_evento": str(evento),
             "index_paso": str(index_paso),
             "siguiente_accion": str(next_step)
