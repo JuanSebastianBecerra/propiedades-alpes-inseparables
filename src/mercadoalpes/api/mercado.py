@@ -1,11 +1,12 @@
 import src.mercadoalpes.seedwork.presentacion.api as api
 import json
-from src.mercadoalpes.modulos.mercado.aplicacion.servicios import ServicioTransaccion
+from src.mercadoalpes.modulos.mercado.aplicacion.servicios import ServicioTransaccion, ServicioSagalog
 from src.mercadoalpes.seedwork.dominio.excepciones import ExcepcionDominio
 
 from flask import request, jsonify
 from flask import Response
-from src.mercadoalpes.modulos.mercado.aplicacion.mapeadores import MapeadorTransaccionDTOJson
+from src.mercadoalpes.modulos.mercado.aplicacion.mapeadores import MapeadorTransaccionDTOJson, MapeadorSagalog, \
+    MapeadorSagalogDTOJson
 from src.mercadoalpes.modulos.mercado.aplicacion.comandos.crear_transaccion import CrearTransaccion
 from src.mercadoalpes.modulos.mercado.aplicacion.queries.obtener_transaccion import ObtenerTransaccion
 from src.mercadoalpes.seedwork.aplicacion.comandos import ejecutar_comando
@@ -25,6 +26,20 @@ def registrar_transaccion():
         dto_final = st.crear_transaccion(transaction_dto)
 
         return map_transaction.dto_a_externo(dto_final)
+    except ExcepcionDominio as e:
+        return Response(json.dumps(dict(error=str(e))), status=400, mimetype='application/json')
+
+@bp.route('/sagalog', methods=('POST',))
+def registrar_sagalog():
+    try:
+        sagalog_dict = request.json
+
+        map_sagalog = MapeadorSagalogDTOJson()
+        sagalog_dto = map_sagalog.externo_a_dto(sagalog_dict)
+        st = ServicioSagalog()
+        dto_final = st.crear_sagalog(sagalog_dto)
+
+        return map_sagalog.dto_a_externo(dto_final)
     except ExcepcionDominio as e:
         return Response(json.dumps(dict(error=str(e))), status=400, mimetype='application/json')
 

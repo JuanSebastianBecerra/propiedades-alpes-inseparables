@@ -4,23 +4,25 @@ import uuid
 import time
 import logging
 import traceback
+import json
 
 from src.mercadoalpes.modulos.mercado.infraestructura.schema.v1.eventos import EventoTransaccionCreada
 from src.mercadoalpes.modulos.mercado.infraestructura.schema.v1.comandos import ComandoCrearTransaccion
+from src.mercadoalpes.modulos.sagas.aplicacion.coordinadores.saga_transaccion import oir_mensaje
 from src.mercadoalpes.seedwork.infraestructura import utils
 
 def suscribirse_a_eventos():
     cliente = None
     try:
         cliente = pulsar.Client(f'pulsar://{utils.broker_host()}:6650')
-        consumidor = cliente.subscribe('eventos-transaccion', consumer_type=_pulsar.ConsumerType.Shared,
+        consumidor = cliente.subscribe('eventos-mercado', consumer_type=_pulsar.ConsumerType.Shared,
                                        subscription_name='aeroalpes-sub-eventos',
                                        schema=AvroSchema(EventoTransaccionCreada))
 
         while True:
             mensaje = consumidor.receive()
             print(f'Evento recibido: {mensaje.value().data}')
-
+            oir_mensaje(mensaje, eval(eval(consumidor._schema.schema_info().schema())['name']))
             consumidor.acknowledge(mensaje)
 
         cliente.close()
@@ -35,7 +37,7 @@ def suscribirse_a_comandos():
     cliente = None
     try:
         cliente = pulsar.Client(f'pulsar://{utils.broker_host()}:6650')
-        consumidor = cliente.subscribe('comandos-transaccion', consumer_type=_pulsar.ConsumerType.Shared,
+        consumidor = cliente.subscribe('comandos-mercado', consumer_type=_pulsar.ConsumerType.Shared,
                                        subscription_name='aeroalpes-sub-comandos',
                                        schema=AvroSchema(ComandoCrearTransaccion))
 
