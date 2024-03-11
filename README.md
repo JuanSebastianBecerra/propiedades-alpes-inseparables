@@ -34,7 +34,29 @@ Tenga en cuenta las URL y puertos suministrados por GitPod para la ejecición de
 
   ![image](https://github.com/JuanSebastianBecerra/propiedades-alpes-inseparables/assets/20029761/4e29f34a-950a-4ba8-b37d-57e9e6510a44)
 
-  
+## Listado de actividades
+| Actividad                                          | Responsable            |
+|----------------------------------------------------|------------------------|
+| Creación de repositorio                            | Juan Sebastián Becerra |
+| Mapas de contexto ASIS, TOBE                       | Nicolás Gómez          |
+| Dominios, subdominios y contextos en ContextMapper | Mónica Bajonero        |
+| Punto de vista de contexto                         | Nicolás Gómez          |
+| Punto de vista funcional (módulo)                  | Nestor Pérez           |
+| Punto de vista funcional (C&C)                     | Juan Sebastián Becerra |
+| Punto de vista de información                      | Mónica Bajonero        |
+| Atributos de modificabilidad/extensibilidad        | Mónica Bajonero        |
+| Atributos de Escalabilidad                         | Nicolás Gómez          |
+| Atributos de Latencia                              | Nestor Pérez           |
+| Creación arquitectura hexagonal (código)           | Juan Sebastián Becerra |
+| Montaje en gitpod                                  | Juan Sebastián Becerra |
+| Implementación CQRS y UOW                          | Mónica Bajonero        |
+| Adición módulo mercado                             | Nestor Pérez           |
+| Adición módulo de propiedades                      | Mónica Bajonero        |
+| Adición módulo de clientes                         | Nicolás Gómez          |
+| Implementación de pulsar                           | Juan Sebastián Becerra |
+| Implementación de flujo eventos y comandos         | Mónica Bajonero        |
+| Implementación BFF                                 | Nestor Pérez           |
+| Implementación Saga                                | Juan Sebastián Becerra |
 
 
 
